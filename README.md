@@ -1,7 +1,6 @@
 # my-i3wm-arcdark-dotfiles
 My custom Arc-Dark i3 window manager dotfiles for Arch/EndeavourOS. Focused on clean aesthetics, and custom panel scripts.
 
-# About this Project
 > A clean, modernized i3wm setup for EndeavourOS featuring an Arc-Dark aesthetic, blue accents, interactive i3blocks, and a custom Rofi USB manager.
 
 <p align="center">
