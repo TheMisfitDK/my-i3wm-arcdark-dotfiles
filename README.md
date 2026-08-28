@@ -27,7 +27,6 @@ The visual language of this setup relies on high-contrast, cool-toned colors. Th
 
 *   **Clean Typography:** Configured with `Inter` for a modern, minimalist interface.
 *   **Window Management:** Implements inner gaps of `6` and outer gaps of `3` for a spacious floating look, with 1px borders to keep the screen uncluttered.
-*   **Smart Workspace Rules:** Window class assignments use case-insensitive regex (e.g., `(?i)librewolf`) to ensure applications always map to their correct workspaces regardless of how the system capitalizes them.
 *   **Custom Panel Separators:** The default i3blocks separators are disabled globally. Instead, custom pipe (`|`) text blocks colored in the primary accent blue are used strictly between categorical sections (System, Network, Audio).
 
 ## Interactive Scripts & Modules
