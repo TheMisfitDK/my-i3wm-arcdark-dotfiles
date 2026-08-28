@@ -1,2 +1,2 @@
 # my-i3wm-arcdark-dotfiles
-A simple minimalistic config customization for i3wm arch
+My custom Arc-Dark i3 window manager dotfiles for Arch/EndeavourOS. Focused on clean aesthetics, and custom panel scripts.
