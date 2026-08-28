@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+# 1. Handle mouse clicks (Clicking the block opens Rofi)
+if [ "$BLOCK_BUTTON" = "1" ]; then
+    # List partitions with their mount status
+    DRIVES=$(lsblk -rnpo NAME,SIZE,RM,TYPE,MOUNTPOINT | awk '$3=="1" && $4=="part" {print $1" ("$2") " ($5?"[Mounted]":"[Unmounted]")}')
+    
+    if [ -n "$DRIVES" ]; then
+        # Step 1: Select the drive
+        SELECTED=$(echo "$DRIVES" | rofi -dmenu -i -p "USB Drives" -config ~/.config/rofi/rofidmenu.rasi)
+        
+        if [ -n "$SELECTED" ]; then
+            # Extract device path (e.g., /dev/sdb1) and state
+            DEVICE=$(echo "$SELECTED" | awk '{print $1}')
+            STATE=$(echo "$SELECTED" | awk '{print $3}')
+            
+            # Step 2: Build the action menu based on current state
+            if [ "$STATE" = "[Mounted]" ]; then
+                ACTIONS="1. Unmount\n2. Safely Remove (Power Off)"
+            else
+                ACTIONS="1. Mount\n2. Safely Remove (Power Off)"
+            fi
+            
+            # Show action menu
+            ACTION=$(echo -e "$ACTIONS" | rofi -dmenu -i -p "Action" -config ~/.config/rofi/rofidmenu.rasi)
+            
+            # Step 3: Execute the chosen action
+            case "$ACTION" in
+                1.*Mount)
+                    udisksctl mount -b "$DEVICE" && notify-send "USB Manager" "Mounted $DEVICE"
+                    ;;
+                1.*Unmount)
+                    udisksctl unmount -b "$DEVICE" && notify-send "USB Manager" "Unmounted $DEVICE"
+                    ;;
+                2.*Safely*)
+                    # Find the parent device (e.g., /dev/sdb for /dev/sdb1) to power it off
+                    PARENT=$(lsblk -no PKNAME "$DEVICE" | tr -d ' ')
+                    
+                    # Unmount first if it is currently mounted
+                    if [ "$STATE" = "[Mounted]" ]; then
+                        udisksctl unmount -b "$DEVICE"
+                    fi
+                    
+                    # Power off the parent drive
+                    udisksctl power-off -b "/dev/$PARENT" && notify-send "USB Manager" "Safe to remove drive."
+                    ;;
+            esac
+            # Trigger i3blocks to update immediately
+            pkill -RTMIN+11 i3blocks
+        fi
+    else
+        notify-send "USB Manager" "No removable drives found."
+    fi
+fi
+
+# 2. Display logic for the panel
+TOTAL=$(lsblk -rno RM,TYPE | awk '$1=="1" && $2=="part"' | wc -l)
+MOUNTED=$(lsblk -rno RM,TYPE,MOUNTPOINT | awk '$1=="1" && $2=="part" && $3!=""' | wc -l)
+
+ICON=""
+
+# Output format
+if [ "$TOTAL" -gt 0 ]; then
+    if [ "$MOUNTED" -gt 0 ]; then
+        echo "$ICON $MOUNTED/$TOTAL"
+        echo "$ICON $MOUNTED/$TOTAL"
+        echo "#a6e3a1" # Green
+    else
+        echo "$ICON $TOTAL"
+        echo "$ICON $TOTAL"
+        echo "#a6adc8" # Bright grey
+    fi
+else
+    # Show the icon even when empty, but dim it out
+    echo "$ICON 0"
+    echo "$ICON 0"
+    echo "#45475a" # Dim grey
+fi
