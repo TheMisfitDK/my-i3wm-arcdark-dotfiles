@@ -5,8 +5,7 @@ My custom Arc-Dark i3 window manager dotfiles for Arch/EndeavourOS. Focused on c
 
 <p align="center">
   <!-- Replace the URL below with the actual path to your screenshot once uploaded -->
-  <img src="<img width="1360" height="768" alt="image" src="https://github.com/user-attachments/assets/06c5a1d0-d0a4-4d42-9689-116eaa8c43ae" />
-" />
+  <img src="https://github.com/user-attachments/assets/53946ecf-da61-4f64-bcdc-690bbff12bda">
 </p>
 
 ## About This Setup
